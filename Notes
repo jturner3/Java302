@@ -1,0 +1,12 @@
+We went in and gave the application a permission service that goes in and gives a USER AND ADMIN role. 
+We created a Service annotation that let's Spring know it's not in an encapsulated state.
+We created a getToken method that goes and retrieves the login information and compares it and returns and authentication.
+Added the editUser parameter that gives the users their roles and if they can edit the users
+Added the mode.addAttribute Permission to the controller to give the profiles the attributes and the permission service we established
+for the users having roles and being able to edit the users. 
+
+How many different roles can we give users?
+What other services can we add to websites other than permissionService?
+
+The app has changed relatively little but the functionality definitely has changed and makes it more of a serious application with 
+and ADMIN that controls and can edit the user information and not everyone has access to editing the profiles except the ADMIN.
