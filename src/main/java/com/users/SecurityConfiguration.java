@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.encoding.PlaintextPasswordEncoder;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
 @EnableWebSecurity
-// @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -20,14 +21,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-		// httpSecurity.authorizeRequests().anyRequest().permitAll();
-
 		httpSecurity
 				.authorizeRequests().antMatchers("/h2-console/**").permitAll()
 				.and()
 				.authorizeRequests().antMatchers("/console/**").permitAll()
 				.and()
-				.authorizeRequests().antMatchers("/", "/user/**").authenticated().anyRequest().permitAll()
+				.authorizeRequests().antMatchers("/login").permitAll()
+				.and()
+				.authorizeRequests().anyRequest().authenticated()
 				.and()
 				.formLogin().loginPage("/login").usernameParameter("username").passwordParameter("password")
 				.and()
@@ -41,7 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		auth.jdbcAuthentication()
 				.dataSource(dataSource)
-				.rolePrefix("")
+				.rolePrefix("ROLE_")
 				.passwordEncoder(new PlaintextPasswordEncoder())
 				.usersByUsernameQuery("select email as username, password, active as enabled from java302.users where email = ?")
 				.authoritiesByUsernameQuery("select u.email as username, ur.role as authority from java302.users u inner join java302.user_roles ur on (u.id = ur.user_id) where u.email = ?");

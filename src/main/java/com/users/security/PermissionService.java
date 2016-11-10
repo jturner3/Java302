@@ -1,7 +1,7 @@
 package com.users.security;
 
-import static com.users.security.Role.ADMIN;
-import static com.users.security.Role.USER;
+import static com.users.security.Role.ROLE_ADMIN;
+import static com.users.security.Role.ROLE_USER;
 import static org.springframework.security.core.context.SecurityContextHolder.getContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -44,20 +44,13 @@ public class PermissionService {
 	}
 	
 	//Allows us to edit users if we are Admins but not users
-	public boolean canEditUser(long userId) {
-		return hasRole(ADMIN) || (hasRole(USER) && findCurrentUserId() == userId);
+	public boolean canAccessUser(long userId) {
+		return hasRole(ROLE_ADMIN) || (hasRole(ROLE_USER) && findCurrentUserId() == userId);
 	}
 	
 	//Matches the user role with the contactId 
 	public boolean canEditContact(long contactId) {
-		return hasRole(USER)
+		return hasRole(ROLE_USER)
 				&& contactRepo.findByUserIdAndId(findCurrentUserId(), contactId) != null;
 	}
-	
-	
-	
-	
-	
-	
-	
 }

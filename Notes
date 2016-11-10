@@ -10,3 +10,15 @@ What other services can we add to websites other than permissionService?
 
 The app has changed relatively little but the functionality definitely has changed and makes it more of a serious application with 
 and ADMIN that controls and can edit the user information and not everyone has access to editing the profiles except the ADMIN.
+
+//Step 3 
+
+We added authorization for the USER and the ADMIN. We gave them roles for who can view and edit what.
+We also gave different default views for the User and Admin and what they see after they login
+Created a contactCreate page so we can create contacts for the User
+For the Admin it displays the USERS in the database
+
+I would say the most confusing part about putting stuff together was understanding how the authorization needs to be 
+placed in the files and how to give people different roles with different levels of authorization!
+
+

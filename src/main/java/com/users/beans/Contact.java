@@ -36,6 +36,10 @@ public class Contact {
 		this.active = active;
 	}
 	
+	public Contact (long userId){
+		this.userId = userId;
+	}
+	
 	
 	//Converting the Strings to Strings so they can be printed
 	@Override

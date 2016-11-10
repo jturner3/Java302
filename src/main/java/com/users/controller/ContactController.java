@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.util.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +35,7 @@ public class ContactController {
 	@Autowired
 	private PermissionService permissionService;
 	
+	@Secured("ROLE_USER") //Secured gives assigns the security parameters that we created
 	@RequestMapping("/contacts")
 	public String listContacts(Model model) {
 		long currentUserId = permissionService.findCurrentUserId();
@@ -42,6 +44,7 @@ public class ContactController {
 		return "listContacts";
 	}
 	
+	@Secured("ROLE_USER")
 	@RequestMapping("/contact/{contactId}")
 	public String contact(@PathVariable long contactId, Model model) {
 		model.addAttribute("contact", contactRepo.findOne(contactId));
@@ -55,6 +58,7 @@ public class ContactController {
 		return "contact";
 	}
 	
+	@Secured("ROLE_USER")
 	@RequestMapping(value = "/contact/{contactId}/edit", method = RequestMethod.GET)
 	public String contactEdit(@PathVariable long contactId, Model model) {
 		model.addAttribute("contact", contactRepo.findOne(contactId));
@@ -71,6 +75,7 @@ public class ContactController {
 		return "contactEdit";
 	}
 	
+	@Secured("ROLE_USER") 
 	@RequestMapping(value = "/contact/{contactId}/edit", method = RequestMethod.POST)
 	public String profileSave(@ModelAttribute Contact contact, @PathVariable long contactId,
 			@RequestParam(name = "removeImage", defaultValue = "false") boolean removeImage,
@@ -111,4 +116,24 @@ public class ContactController {
 
 		return contact(contactId, model);
 	}
+	//Getting the user information and contact attributes, Getting the information as its .GET
+	@Secured("ROLE_USER")
+	@RequestMapping(value = "/contact/create", method = RequestMethod.GET)
+	public String createContact(Model model) {
+		model.addAttribute("contact", new Contact(permissionService.findCurrentUserId()));
+
+		return "contactCreate";
+	}
+	//Posting and saving the new contact that you just created
+	@Secured("ROLE_USER")
+	@RequestMapping(value = "/contact/create", method = RequestMethod.POST)
+	public String createContact(@ModelAttribute Contact contact,
+			@RequestParam("file") MultipartFile file, Model model) {
+
+		Contact savedContact = contactRepo.save(contact);
+
+		return profileSave(savedContact, savedContact.getId(), false, file, model);
+	}
+	
+	
 }
