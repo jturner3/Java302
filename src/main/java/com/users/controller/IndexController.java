@@ -1,6 +1,7 @@
 package com.users.controller;
 
 import static com.users.security.Role.ROLE_ADMIN;
+import static com.users.security.Role.ROLE_USER;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +23,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.users.beans.User;
 import com.users.beans.UserImage;
+import com.users.beans.UserRole;
 import com.users.repositories.UserImageRepository;
 import com.users.repositories.UserRepository;
+import com.users.repositories.UserRoleRepository;
 import com.users.security.PermissionService;
+import com.users.service.ImageService;
 
 
 @Controller
@@ -39,6 +43,12 @@ public class IndexController {
 	
 	@Autowired
 	private PermissionService permissionService;
+	
+	@Autowired
+	private ImageService imageService;
+	
+	@Autowired
+	private UserRoleRepository userRoleRepo;
 
 	@RequestMapping("/greeting")
 	public String greeting(@RequestParam(value = "name", required = false, defaultValue = "World") String name, Model model) {
@@ -68,6 +78,11 @@ public class IndexController {
 	@RequestMapping("/myprofile")
 	public String myprofile(Model model) {
 		return profile(permissionService.findCurrentUserId(), model);
+	}
+	
+	@RequestMapping("/register")
+	public String register(Model model) {
+	return createUser(model);
 	}
 
 	@RequestMapping("/user/{userId}")
@@ -107,8 +122,7 @@ public class IndexController {
 	public String profileSave(@ModelAttribute User user,
 			@PathVariable long userId,
 			@RequestParam(name = "removeImage", defaultValue = "false") boolean removeImage,
-			@RequestParam("file") MultipartFile file,
-			Model model) {
+			@RequestParam("file") MultipartFile file,Model model) {
 		
 		if (!permissionService.canAccessUser(userId)) {
 			log.warn("Cannot allow user to edit " + userId);
@@ -120,33 +134,15 @@ public class IndexController {
 		userRepo.save(user);
 		model.addAttribute("message", "User " + user.getEmail() + " saved.");
 
-		if (!file.isEmpty()) {
-			try {
-				List<UserImage> images = userImageRepo.findByUserId(user.getId());
-				UserImage img = (images.size() > 0) ? images.get(0) : new UserImage(userId);
-				img.setContentType(file.getContentType());
-				img.setImage(file.getBytes());
-				userImageRepo.save(img);
-
-				log.debug("Saved Image");
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
-		} else if (removeImage) {
-			log.debug("Removing Image");
-			// user.setImage(null);
-			List<UserImage> images = userImageRepo.findByUserId(user.getId());
-
-			for (UserImage img : images) {
-				userImageRepo.delete(img);
-			}
+		if(removeImage) {
+			imageService.deleteImage(user);
+		} else {
+			imageService.saveImage(file, user);
 		}
 
 		return profile(userId, model);
 	}
 	//Mapping the way admin can create new users
-	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/user/create", method = RequestMethod.GET)
 	public String createUser(Model model) {
 		model.addAttribute("user", new User());
@@ -154,13 +150,17 @@ public class IndexController {
 		return "userCreate";
 	}
 	//Mapping the way the admin post the new users information and saves it.
-	@Secured("ROLE_ADMIN")
 	@RequestMapping(value = "/user/create", method = RequestMethod.POST)
-	public String createContact(@ModelAttribute User user,
+	public String createUser(@ModelAttribute User user,
 			@RequestParam("file") MultipartFile file, Model model) {
 
-		User savedUser = userRepo.save(user);
+		log.info(user.toString());
 		
-	return profileSave(savedUser, savedUser.getId(), false, file, model);
+		User savedUser = userRepo.save(user);
+		UserRole role = new UserRole(savedUser, ROLE_USER);
+		userRoleRepo.save(role);
+		imageService.saveImage(file, savedUser);
+		
+	return profile(savedUser.getId(), model);
 	}
 }

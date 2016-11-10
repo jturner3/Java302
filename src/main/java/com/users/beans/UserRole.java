@@ -23,6 +23,7 @@ public class UserRole {
 	
 	public UserRole(User user, Role role){
 		this.userId = user.getId();
+		this.role = role.toString().substring(role.toString().indexOf('_') + 1);
 	}
 
 	public UserRole(long userId, String role) {

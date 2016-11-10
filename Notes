@@ -27,3 +27,11 @@ Added twitter and facebook integration with the contacts and users
 Users can add their urls and twitter handles to their information and it links out
 Admins can create new users and save them
 
+//Step 5
+
+Allows Users to register with link included on login page
+Users after registering can use their new login immediately
+We can delete images for the users to put in new ones
+
+
+
