@@ -21,4 +21,9 @@ For the Admin it displays the USERS in the database
 I would say the most confusing part about putting stuff together was understanding how the authorization needs to be 
 placed in the files and how to give people different roles with different levels of authorization!
 
+//Step 4
+
+Added twitter and facebook integration with the contacts and users
+Users can add their urls and twitter handles to their information and it links out
+Admins can create new users and save them
 
