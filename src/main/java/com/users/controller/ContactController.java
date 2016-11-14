@@ -48,6 +48,17 @@ public class ContactController {
 	}
 	
 	@Secured("ROLE_USER")
+	@RequestMapping(value = "/contact/search", method = RequestMethod.POST)
+	public String searchUsers(@RequestParam("search") String search, Model model) {
+		log.debug("Searching by " + search);
+		model.addAttribute("contacts",
+				contactRepo.findByLastNameOrFirstNameOrEmailOrTwitterHandleOrFacebookUrlIgnoreCase(
+						search, search, search, search, search));
+		model.addAttribute("search", search);
+		return "listContacts";
+	}
+	
+	@Secured("ROLE_USER")
 	@RequestMapping("/contact/{contactId}")
 	public String contact(@PathVariable long contactId, Model model) {
 		model.addAttribute("contact", contactRepo.findOne(contactId));
