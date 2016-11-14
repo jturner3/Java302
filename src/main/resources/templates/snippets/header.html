@@ -15,6 +15,8 @@
 						<li sec:authorize="hasRole('ROLE_ADMIN')" th:class="${#httpServletRequest.requestURI.contains('user')?'active':null}"><a href="#" th:href="@{/users}">Users</a></li>
 				    <li sec:authorize="hasRole('ROLE_USER')" th:class="${#httpServletRequest.requestURI.contains('contact')?'active':null}"><a href="#" th:href="@{/contacts}">Contacts</a></li>
                     <li sec:authorize="isAuthenticated()" th:class="${#httpServletRequest.requestURI.equals('/myprofile')?'active':null}"><a href="#" th:href="@{/myprofile}">My Profile</a></li>
+                    <li sec:authorize="isAuthenticated()" th:class="${#httpServletRequest.requestURI.equals('/email/user')?'active':null}"><a href="#" th:href="@{/email/user}">Invite User</a></li>
+                    
 				</ul>
 				<ul class="nav navbar-nav navbar-right" sec:authorize="isAuthenticated()">
 					<li><a href="#" onclick="$('#logoutForm').submit();">Logout</a></li>

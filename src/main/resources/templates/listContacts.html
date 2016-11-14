@@ -23,6 +23,7 @@
 				<td th:text="${contact.email}"></td>
 				<td th:text="${contact.phoneNumber}"></td>
 				<td><a href="/" th:href="@{|/contact/${contact.id}|}">Profile</a></td>
+				<td><a href="/" th:href="@{|/email/contact/${contact.id}|}">Share</a></td>
 			</tr>
 		</tbody>
 	</table>

@@ -58,4 +58,12 @@ public class PermissionService {
 		return hasRole(ROLE_USER)
 				&& contactRepo.findByUserIdAndId(findCurrentUserId(), contactId) != null;
 	}
+	//Get's the current email and returns the token that is registered for the email and matching it with the name
+	public String getCurrentEmail() {
+		return getToken().getName();
+	}
+	public User findCurrentUser() {
+		List<User> users = userRepo.findByEmail(getToken().getName());
+		return users != null && !users.isEmpty() ? users.get(0) : new User();
+	}
 }
