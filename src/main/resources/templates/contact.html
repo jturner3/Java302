@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body layout:fragment="content">
-	<h1>Contact</h1>
+	<h1>Contacts</h1>
 	<img id="avatar" src="" th:if="${contactImage}" th:src="${contactImage.htmlSrc}" alt="Profile Image" title="Profile Image"/>
 	<ul th:object="${contact}">
 		<li th:text="*{firstName}"></li>
