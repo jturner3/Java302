@@ -6,7 +6,7 @@
 </head>
 <body layout:fragment="content">
 	<h1>Users</h1>
-	<form th:action="@{|/user/search|}" method="POST">
+	<form th:action="@{|/contact/search|}" method="POST">
 	   <input type="text" placeholder="Search..." name="search" th:value="${search}" />
 	   <input type="submit" th:value="Search"/>
 	</form> 
@@ -28,9 +28,11 @@
 				<td th:text="${user.email}"></td>
 				<td th:text="${user.phoneNumber}"></td>
 				<td><a href="/" th:href="@{|/user/${user.id}|}">Profile</a></td>
+				<td><a href="/" th:href="@{|/user/${user.id}|}">Share</a></td>
+				
 			</tr>
 		</tbody>
 	</table>
-	<a href="/user/create">Create User</a>
+	<a href="/user/create">Create Contact</a>
 </body>
 </html>
